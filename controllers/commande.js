@@ -1,4 +1,3 @@
-var Client = require("../models/client");
 var Commande = require("../models/commande");
 const { param, body, validationResult } = require("express-validator");
 
@@ -13,25 +12,20 @@ exports.create = [
     .isNumeric()
     .withMessage("Id must be a number."),
 
-  body("firstName")
+  body("commande")
     .trim()
     .isLength({ min: 1 })
     .escape()
-    .withMessage("First name must be specified.")
+    .withMessage("Command must be specified.")
     .isAlphanumeric()
-    .withMessage("First name has non-alphanumeric characters."),
+    .withMessage("command has non-alphanumeric characters."),
 
-  body("lastName")
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage("Last name must be specified.")
-    .isAlphanumeric()
-    .withMessage("Last name has non-alphanumeric characters."),
+  body("dateCommand", "Invalid date")
+    .optional({ checkFalsy: true })
+    .isISO8601()
+    .toDate(),
 
-  body("email").isEmail().withMessage("Invalid email"),
-
-  body("dateOfBirth", "Invalid date of birth")
+  body("dateCommandEnd", "Invalid date")
     .optional({ checkFalsy: true })
     .isISO8601()
     .toDate(),
@@ -42,18 +36,17 @@ exports.create = [
     const errors = validationResult(req);
 
     // Create client object with escaped and trimmed data
-    var client = new Client({
+    var commande = new Commande({
       _id: req.body.id,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      dateOfBirth: req.body.dateOfBirth,
+      commande: req.body.commande,
+      dateCommand: req.body.dateCommand,
+      dateCommandEnd: req.body.dateCommandEnd,
     });
 
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     } else {
-      client.save(function (err) {
+      commande.save(function (err) {
         if (err) {
           return res.status(500).json(err);
         }
@@ -65,7 +58,7 @@ exports.create = [
 
 // Read
 exports.getAll = function (req, res, next) {
-  Client.find().exec(function (err, result) {
+  Commande.find().exec(function (err, result) {
     if (err) {
       return res.status(500).json(err);
     }
@@ -89,7 +82,7 @@ exports.getById = [
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     } else {
-      Client.findById(req.params.id).exec(function (err, result) {
+      Commande.findById(req.params.id).exec(function (err, result) {
         if (err) {
           return res.status(500).json(err);
         }
@@ -116,7 +109,7 @@ exports.delete = [
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     } else {
-      Client.findByIdAndRemove(req.params.id).exec(function (err, result) {
+      Commande.findByIdAndRemove(req.params.id).exec(function (err, result) {
         if (err) {
           return res.status(500).json(err);
         }
@@ -128,7 +121,7 @@ exports.delete = [
 
 // Update
 exports.update = [
-  param("id")
+  body("id")
     .trim()
     .isLength({ min: 1 })
     .escape()
@@ -136,25 +129,20 @@ exports.update = [
     .isNumeric()
     .withMessage("Id must be a number."),
 
-  body("firstName")
+  body("commande")
     .trim()
     .isLength({ min: 1 })
     .escape()
-    .withMessage("First name must be specified.")
+    .withMessage("Command must be specified.")
     .isAlphanumeric()
-    .withMessage("First name has non-alphanumeric characters."),
+    .withMessage("command has non-alphanumeric characters."),
 
-  body("lastName")
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage("Last name must be specified.")
-    .isAlphanumeric()
-    .withMessage("Last name has non-alphanumeric characters."),
+  body("dateCommand", "Invalid date")
+    .optional({ checkFalsy: true })
+    .isISO8601()
+    .toDate(),
 
-  body("email").isEmail().withMessage("Invalid email"),
-
-  body("dateOfBirth", "Invalid date of birth")
+  body("dateCommandEnd", "Invalid date")
     .optional({ checkFalsy: true })
     .isISO8601()
     .toDate(),
@@ -164,18 +152,17 @@ exports.update = [
     const errors = validationResult(req);
 
     // Create client object with escaped and trimmed data
-    var client = new Client({
-      _id: req.params.id,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      dateOfBirth: req.body.dateOfBirth,
+    var commande = new Commande({
+      _id: req.body.id,
+      commande: req.body.commande,
+      dateCommand: req.body.dateCommand,
+      dateCommandEnd: req.body.dateCommandEnd,
     });
 
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     } else {
-      Client.findByIdAndUpdate(req.params.id, client, function (err, result) {
+      Commande.findByIdAndUpdate(req.params.id, client, function (err, result) {
         if (err) {
           return res.status(500).json(err);
         }

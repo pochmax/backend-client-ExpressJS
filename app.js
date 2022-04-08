@@ -5,12 +5,13 @@ var logger = require("morgan");
 var cors = require("cors");
 
 var clientRouter = require("./routes/client");
+var commandeRouter = require("./routes/commande");
 
 var app = express();
 var mongoose = require("mongoose");
 
 var dev_db_url =
-  "mongodb+srv://JcButNotJesus:Jc100896@cluster0.jxdbz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+  "mongodb+srv://gauthierboddaert:23novembre2001@node.yhizj.mongodb.net/test";
 
 var mongoDB = process.env.MONGODB_URI || dev_db_url;
 
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
+app.use("/commande", commandeRouter);
 app.use("/client", clientRouter);
 
 module.exports = app;
