@@ -12,7 +12,7 @@ var formatDate = function () {
 };
 
 var sudentSchema = new mongoose.Schema({
-  _id: { type: Number, required: true },
+  // _id: { type: Number, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   email: {
@@ -32,6 +32,12 @@ var sudentSchema = new mongoose.Schema({
     required: true,
     transform: (x) => DateTime.fromJSDate(x).toISODate(),
   },
+  commande: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "commande",
+    },
+  ],
 });
 
 sudentSchema.set("toJSON", {

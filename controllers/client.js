@@ -5,13 +5,13 @@ const { param, body, validationResult } = require("express-validator");
 // Create
 exports.create = [
   // Check validation
-  body("id")
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage("Id must be specified.")
-    .isNumeric()
-    .withMessage("Id must be a number."),
+  // body("id")
+  //   .trim()
+  //   .isLength({ min: 1 })
+  //   .escape()
+  //   .withMessage("Id must be specified.")
+  //   .isNumeric()
+  //   .withMessage("Id must be a number."),
 
   body("firstName")
     .trim()
@@ -65,12 +65,14 @@ exports.create = [
 
 // Read
 exports.getAll = function (req, res, next) {
-  Client.find().exec(function (err, result) {
-    if (err) {
-      return res.status(500).json(err);
-    }
-    return res.status(200).json(result);
-  });
+  Client.find()
+    .populate("commande")
+    .exec(function (err, result) {
+      if (err) {
+        return res.status(500).json(err);
+      }
+      return res.status(200).json(result);
+    });
 };
 
 exports.getById = [
@@ -89,12 +91,14 @@ exports.getById = [
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     } else {
-      Client.findById(req.params.id).exec(function (err, result) {
-        if (err) {
-          return res.status(500).json(err);
-        }
-        return res.status(200).json(result);
-      });
+      Client.findById(req.params.id)
+        .populate("commande")
+        .exec(function (err, result) {
+          if (err) {
+            return res.status(500).json(err);
+          }
+          return res.status(200).json(result);
+        });
     }
   },
 ];

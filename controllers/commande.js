@@ -4,13 +4,13 @@ const { param, body, validationResult } = require("express-validator");
 // Create
 exports.create = [
   // Check validation
-  body("id")
-    .trim()
-    .isLength({ min: 1 })
-    .escape()
-    .withMessage("Id must be specified.")
-    .isNumeric()
-    .withMessage("Id must be a number."),
+  // body("id")
+  //   .trim()
+  //   .isLength({ min: 1 })
+  //   .escape()
+  //   .withMessage("Id must be specified.")
+  //   .isNumeric()
+  //   .withMessage("Id must be a number."),
 
   body("commande")
     .trim()
@@ -58,12 +58,14 @@ exports.create = [
 
 // Read
 exports.getAll = function (req, res, next) {
-  Commande.find().exec(function (err, result) {
-    if (err) {
-      return res.status(500).json(err);
-    }
-    return res.status(200).json(result);
-  });
+  Commande.find()
+    .populate("client")
+    .exec(function (err, result) {
+      if (err) {
+        return res.status(500).json(err);
+      }
+      return res.status(200).json(result);
+    });
 };
 
 exports.getById = [
